@@ -16,12 +16,14 @@
                    {:builds {:client {:figwheel     {:on-jsload "timetable.core/run"}
                                       :compiler     {:main "timetable.core"
                                                      :asset-path "js"
+                                                     :closure-defines {timetable.core/api-uri "http://localhost:3000/api/v1/schedules/students/anliksim"}
                                                      :optimizations :none
                                                      :source-map true
                                                      :source-map-timestamp true}}}}}
 
              :prod {:cljsbuild
                     {:builds {:client {:compiler    {:optimizations :advanced
+                                                     :closure-defines {timetable.core/api-uri "https://zhaw-timetable-server.herokuapp.com/api/v1/schedules/students/anliksim"}
                                                      :elide-asserts true
                                                      :pretty-print false}}}}}}
 

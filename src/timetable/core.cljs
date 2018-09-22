@@ -5,6 +5,9 @@
             [clojure.string :as str]
             [ajax.core :as ajax]))
 
+;; load uri from compiler settings
+(goog-define api-uri "none")
+
 ;;;; Event Handlers ------------------------
 
 (rf/reg-event-db
@@ -34,7 +37,7 @@
  :load-json
  (fn [{:keys [db]} _]
    {:http-xhrio {:method          :get
-                 :uri             "data.json"
+                 :uri             api-uri
                  :timeout         8000
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:good-http-result]
@@ -43,13 +46,11 @@
 (rf/reg-event-fx
  :good-http-result
  (fn [db [_ result]]
-   (println (str "Result: " result))
    (rf/dispatch [:result-change result])))
 
 (rf/reg-event-fx
  :bad-http-result
  (fn [db [_ result]]
-   (println (str "Error: " result))
    (rf/dispatch [:error-change (result :last-error)])))
 
 ;;;; Subs ------------------------
@@ -66,21 +67,46 @@
 
 ;;;; Views ------------------------
 
-(defn event-view
-  [{:keys [name]}]
-  [:div name])
+;; ^{:key index} in combination with map-indexed is used for performance reasons
 
-(defn events
-  [{:keys [events]}]
+(defn slot-view
+  [index {:keys [startTime endTime]}]
+  ^{:key index}
   [:div
-   (for [event events]
-     ^{:key (:name event)} [event-view event])])
+   [:div startTime]
+   [:div endTime]])
+
+(defn lecturers-view
+  [index {:keys [firstName lastName]}]
+  ^{:key index}
+  [:div
+   [:span (str firstName " " lastName)]])
+
+(defn event-relization-view
+  [index {:keys [lecturers room]}]
+  ^{:key index}
+  [:div
+   (map-indexed lecturers-view lecturers)
+   [:div (:name room)]])
+
+(defn event-view
+  [index {:keys [name, slots, eventRealizations]}]
+  ^{:key index}
+  [:div
+   [:div name]
+   (map-indexed slot-view slots)
+   (map-indexed event-relization-view eventRealizations)])
+
+(defn days-view
+  [index {:keys [events]}]
+  ^{:key index}
+  [:div
+   (map-indexed event-view events)])
 
 (defn timetable
   [{:keys [days]}]
   [:div
-   (for [day days]
-     ^{:key (:date day)} [events day])])
+   (map-indexed days-view days)])
 
 (defn container
   []
