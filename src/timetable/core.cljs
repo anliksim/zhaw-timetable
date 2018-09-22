@@ -1,12 +1,35 @@
 (ns timetable.core
+  (:require-macros [secretary.core :refer [defroute]])
+  (:import goog.History)
   (:require [reagent.core :as reagent]
             [re-frame.core :as rf]
+            [secretary.core :as sec]
+            [goog.events :as gevents]
+            [goog.history.EventType :as EventType]
             [day8.re-frame.http-fx]
             [clojure.string :as str]
             [ajax.core :as ajax]))
 
 ;; load uri from compiler settings
 (goog-define api-uri "none")
+
+;;;; Routing ------------------------
+
+(defonce history
+  (doto (History.)
+        (gevents/listen
+         EventType/NAVIGATE
+         (fn [event]
+           (sec/dispatch! (.-token event))))
+        (.setEnabled true)))
+
+(defn routes
+  []
+  (let [id nil]
+    (sec/set-config! :prefix "#")
+    (defroute "/" [] (sec/dispatch! "/anliksim"))
+    (defroute "/:id" [id] (rf/dispatch [:load-json id]))))
+
 
 ;;;; Event Handlers ------------------------
 
@@ -35,9 +58,9 @@
 (rf/reg-event-fx
  ;; usage:  (dispatch [:load-json])
  :load-json
- (fn [{:keys [db]} _]
+ (fn [_ [_ id]]
    {:http-xhrio {:method          :get
-                 :uri             api-uri
+                 :uri             (str api-uri id)
                  :timeout         8000
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:good-http-result]
@@ -121,10 +144,14 @@
 
 (defn ^:export run
   []
+  ;; mount routes
+  (routes)
   ;; init app state
   (rf/dispatch-sync [:initialize])
-  ;; request data from rest endpoint
-  (rf/dispatch [:load-json])
+  ;  (rf/dispatch [:load-json "anliksim"])
+  (sec/dispatch! "/")
   ;; render ui into app div
   (reagent/render [container]
                   (js/document.getElementById "app")))
+
+

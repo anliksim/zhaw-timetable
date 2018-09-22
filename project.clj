@@ -4,6 +4,7 @@
                  [reagent  "0.7.0"]
                  [re-frame "0.10.5"]
                  [cljs-ajax "0.7.4"]
+                 [secretary "1.2.3"]
                  [com.cognitect/transit-cljs "0.8.256"]
                  [day8.re-frame/http-fx "0.1.6"]]
 
@@ -16,14 +17,14 @@
                    {:builds {:client {:figwheel     {:on-jsload "timetable.core/run"}
                                       :compiler     {:main "timetable.core"
                                                      :asset-path "js"
-                                                     :closure-defines {timetable.core/api-uri "http://localhost:3000/api/v1/schedules/students/anliksim"}
+                                                     :closure-defines {timetable.core/api-uri "http://localhost:3000/api/v1/schedules/students/"}
                                                      :optimizations :none
                                                      :source-map true
                                                      :source-map-timestamp true}}}}}
 
              :prod {:cljsbuild
                     {:builds {:client {:compiler    {:optimizations :advanced
-                                                     :closure-defines {timetable.core/api-uri "https://zhaw-timetable-server.herokuapp.com/api/v1/schedules/students/anliksim"}
+                                                     :closure-defines {timetable.core/api-uri "https://zhaw-timetable-server.herokuapp.com/api/v1/schedules/students/"}
                                                      :elide-asserts true
                                                      :pretty-print false}}}}}}
 
