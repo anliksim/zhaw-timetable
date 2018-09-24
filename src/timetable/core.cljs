@@ -138,6 +138,16 @@
   [:div
    (map-indexed days-view days)])
 
+(defn footer
+  []
+  [:div
+   (str "---")
+   [:div
+    [:span
+     [:a {:href "https://anlikers.ch/"} "Simon Anliker"]
+     " | GitHub: "
+     [:a {:href "https://github.com/anliksim/zhaw-timetable"} "zhaw-timetable"]]]])
+
 (defn container
   []
   (let [api-result @(rf/subscribe [:api-result])
@@ -145,7 +155,8 @@
     [:div
      (if (empty? api-result)
        [:span error]
-       [:div [timetable api-result]])]))
+       [:div [timetable api-result]])
+     [footer]]))
 
 ;;;; Main ------------------------
 
