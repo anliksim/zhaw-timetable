@@ -39,7 +39,7 @@
  :initialize
  (fn [_ _]
    {:api-result nil
-    :error      "No data loaded."}))
+    :error      "Loading data..."}))
 
 (rf/reg-event-db
  ;; dispatched when data gets updated
@@ -92,12 +92,19 @@
 
 ;; ^{:key index} in combination with map-indexed is used for performance reasons
 
+(defn toTimeRangeString
+  [startTime endTime]
+  (let [start (js/Date. startTime)
+        end   (js/Date. endTime)]
+    (str (.toDateString start) " "
+         (.toLocaleTimeString start) " -> "
+         (.toLocaleTimeString end))))
+
 (defn slot-view
   [index {:keys [startTime endTime]}]
   ^{:key index}
   [:div
-   [:div startTime]
-   [:div endTime]])
+   [:span (toTimeRangeString startTime endTime)]])
 
 (defn lecturers-view
   [index {:keys [firstName lastName]}]
@@ -115,7 +122,7 @@
 (defn event-view
   [index {:keys [name, slots, eventRealizations]}]
   ^{:key index}
-  [:div
+  [:div.pad25
    [:div name]
    (map-indexed slot-view slots)
    (map-indexed event-relization-view eventRealizations)])
