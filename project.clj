@@ -24,7 +24,8 @@
 
              :prod {:cljsbuild
                     {:builds {:client {:compiler    {:optimizations :advanced
-                                                     :closure-defines {timetable.core/api-uri "https://zhaw-timetable-server.herokuapp.com/api/v1/schedules/students/"}
+;                                                     :closure-defines {timetable.core/api-uri "https://zhaw-timetable-server.herokuapp.com/api/v1/schedules/students/"}
+                                                     :closure-defines {timetable.core/api-uri "https://coherent-sphere-217913.appspot.com/api/v1/schedules/students/"}
                                                      :elide-asserts true
                                                      :pretty-print false}}}}}}
 
