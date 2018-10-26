@@ -4,8 +4,8 @@ Lightweight web app that serves timetables for students of ZHAW.
 
 Access the timetable using your id:
 
-    https://anliksim.github.io/zhawtt/#/<zhawid>
-
+    https://zhaw.anlikers.ch/#/<zhawid>
+    
 
 ### Development 
 
